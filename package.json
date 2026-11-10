@@ -1,0 +1,20 @@
+{
+  "name": "exhibition-lead-capture",
+  "version": "1.0.0",
+  "private": true,
+  "description": "展会扫码留资系统：H5 登记 + 管理后台 + Excel 导出",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "backup": "node scripts/backup.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "exceljs": "^4.4.0",
+    "express": "^4.19.2",
+    "qrcode": "^1.5.4"
+  }
+}

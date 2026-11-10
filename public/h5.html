@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
+  <meta name="format-detection" content="telephone=no" />
+  <title>展会留资登记</title>
+  <link rel="stylesheet" href="/assets/css/h5.css?v=2" />
+</head>
+<body>
+  <!-- 加载中 -->
+  <div id="loading" class="result">
+    <p>加载中…</p>
+  </div>
+
+  <!-- 表单页 -->
+  <div id="formPage" class="hidden">
+    <header class="hero">
+      <span class="brand">展会留资</span>
+      <h1 id="campaignName">活动名称</h1>
+      <p class="sub" id="campaignSub">填写以下信息，现场领取资料 / 礼品</p>
+      <div class="meta">
+        <span id="campaignDate"></span>
+      </div>
+    </header>
+
+    <main class="card">
+      <div class="form-head">
+        <h2>留资信息</h2>
+        <p>带 <em>*</em> 为必填项，手机号需短信验证</p>
+      </div>
+
+      <form id="leadForm" novalidate>
+        <div id="dynamicFields"></div>
+      </form>
+    </main>
+
+    <p class="footer-tips">您提交的信息仅用于展会后资料发送与业务联系</p>
+
+    <div class="submit-bar">
+      <button id="submitBtn" type="submit" form="leadForm">提交</button>
+    </div>
+  </div>
+
+  <!-- 提交成功 -->
+  <div id="successPage" class="result hidden">
+    <div class="icon">✓</div>
+    <h2>提交成功</h2>
+    <p id="successDesc">感谢您的填写，请向现场工作人员领取资料</p>
+  </div>
+
+  <!-- 异常页 -->
+  <div id="errorPage" class="result warn hidden">
+    <div class="icon">!</div>
+    <h2 id="errorTitle">链接已失效</h2>
+    <p id="errorDesc">请联系现场工作人员获取正确的二维码</p>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="/assets/js/h5.js?v=5"></script>
+</body>
+</html>

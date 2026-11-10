@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>展会留资系统 · 管理后台</title>
+  <link rel="stylesheet" href="/assets/css/admin.css?v=2" />
+</head>
+<body>
+  <!-- 登录 -->
+  <div id="loginPage" class="login-wrap hidden">
+    <div class="login-card">
+      <h1>展会留资系统</h1>
+      <p class="sub">管理后台 · 请使用管理员账号登录</p>
+      <form id="loginForm">
+        <label>账号
+          <input id="loginUsername" type="text" autocomplete="username" placeholder="请输入账号" />
+        </label>
+        <label>密码
+          <input id="loginPassword" type="password" autocomplete="current-password" placeholder="请输入密码" />
+        </label>
+        <p class="login-err" id="loginErr"></p>
+        <button class="btn-primary block" id="loginBtn" type="submit">登录</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 主体 -->
+  <div id="app" class="layout hidden">
+    <aside class="sidebar">
+      <div class="logo">展会留资系统</div>
+      <nav id="nav">
+        <a data-view="dashboard">数据概览</a>
+        <a data-view="campaigns">活动与二维码</a>
+        <a data-view="leads">留资数据</a>
+        <a data-view="exports">导出记录</a>
+        <a data-view="settings">系统设置</a>
+      </nav>
+      <div class="foot">
+        <span id="adminName">admin</span>
+        <button class="btn-link" id="logoutBtn">退出</button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <div class="topbar">
+        <h1 id="viewTitle">数据概览</h1>
+        <div class="actions" id="viewActions"></div>
+      </div>
+
+      <!-- 概览 -->
+      <section id="view-dashboard" class="view">
+        <div class="stat-grid" id="statGrid"></div>
+        <div class="panel">
+          <h2>近 7 天留资趋势</h2>
+          <div class="chart" id="trendChart"></div>
+        </div>
+        <div class="grid-2">
+          <div class="panel">
+            <h2>活动留资排行</h2>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>活动</th><th>累计</th><th>今日</th></tr></thead>
+                <tbody id="rankBody"></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="panel">
+            <h2>最新留资</h2>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>姓名</th><th>公司</th><th>活动</th><th>时间</th></tr></thead>
+                <tbody id="recentBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 活动 -->
+      <section id="view-campaigns" class="view hidden">
+        <div class="panel">
+          <div class="filters">
+            <span style="color: #8f959e; font-size: 13px">共 <b id="campaignTotal">0</b> 场活动，每场活动对应独立二维码</span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>活动名称</th><th>活动码</th><th>展会时间</th>
+                  <th>状态</th><th>留资数</th><th>操作</th>
+                </tr>
+              </thead>
+              <tbody id="campaignBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- 表单编辑 -->
+      <section id="view-form" class="view hidden">
+        <div id="formEditor"></div>
+      </section>
+
+      <!-- 留资 -->
+      <section id="view-leads" class="view hidden">
+        <div class="panel">
+          <div class="filters">
+            <select id="leadCampaign"><option value="">全部活动</option></select>
+            <input type="date" id="leadFrom" />
+            <span style="color: #8f959e">至</span>
+            <input type="date" id="leadTo" />
+            <input type="text" id="leadKeyword" placeholder="姓名 / 公司 / 手机号" />
+            <button class="btn-primary" id="leadSearchBtn">查询</button>
+            <button class="btn-ghost" id="leadResetBtn">重置</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>姓名</th><th>公司名称</th><th>职位</th><th>手机号</th>
+                  <th>活动</th><th>短信验证</th><th>提交时间</th><th>操作</th>
+                </tr>
+              </thead>
+              <tbody id="leadBody"></tbody>
+            </table>
+          </div>
+          <div class="pager" id="leadPager"></div>
+        </div>
+      </section>
+
+      <!-- 导出记录 -->
+      <section id="view-exports" class="view hidden">
+        <div class="panel">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>文件名</th><th>导出行数</th><th>筛选条件</th><th>操作人</th><th>导出时间</th><th>操作</th></tr>
+              </thead>
+              <tbody id="exportBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- 设置 -->
+      <section id="view-settings" class="view hidden">
+        <div class="panel">
+          <h2>短信服务配置</h2>
+          <form id="settingsForm" class="form-grid">
+            <div class="form-item">
+              <label>短信服务商</label>
+              <select id="setSmsProvider">
+                <option value="mock">mock（本地测试，不发真实短信）</option>
+                <option value="ihuyi">ihuyi（互亿无线）</option>
+                <option value="http">http（自定义短信网关）</option>
+              </select>
+            </div>
+            <div class="form-item">
+              <label>测试模式</label>
+              <div class="checkbox" style="height: 38px">
+                <input type="checkbox" id="setSmsTestMode" />
+                <span>开启后验证码在页面回显，仅用于联调</span>
+              </div>
+            </div>
+            <div class="form-item">
+              <label>互亿无线 APIID</label>
+              <input id="setIhuyiAccount" type="text" placeholder="用户中心-验证码短信-产品总览" />
+            </div>
+            <div class="form-item">
+              <label>互亿无线 APIKEY</label>
+              <input id="setIhuyiApiKey" type="text" placeholder="留空表示不修改" />
+            </div>
+            <div class="form-item">
+              <label>短信模板 ID</label>
+              <input id="setIhuyiTemplateId" type="text" placeholder="调试可用默认模板 1" />
+              <span class="tip">签名写在模板里，无需单独配置签名</span>
+            </div>
+            <div class="form-item full">
+              <label>短信网关地址</label>
+              <input id="setSmsEndpoint" type="text" placeholder="https://your-sms-provider.com/api/send" />
+              <span class="tip">POST JSON：{ phone, code, signName, templateCode }，请求头携带 X-App-Key / X-App-Secret</span>
+            </div>
+            <div class="form-item">
+              <label>AppKey</label>
+              <input id="setSmsAppKey" type="text" />
+            </div>
+            <div class="form-item">
+              <label>AppSecret</label>
+              <input id="setSmsAppSecret" type="text" placeholder="留空表示不修改" />
+            </div>
+            <div class="form-item">
+              <label>短信签名</label>
+              <input id="setSmsSignName" type="text" />
+            </div>
+            <div class="form-item">
+              <label>模板编号</label>
+              <input id="setSmsTemplateCode" type="text" />
+            </div>
+            <div class="form-item">
+              <label>验证码有效期（秒）</label>
+              <input id="setCodeExpire" type="number" min="60" max="1800" />
+            </div>
+            <div class="form-item">
+              <label>同一号码发送间隔（秒）</label>
+              <input id="setResendInterval" type="number" min="30" max="600" />
+            </div>
+            <div class="form-item">
+              <label>单号码每日上限（条）</label>
+              <input id="setDailyLimit" type="number" min="1" max="100" />
+            </div>
+            <div class="form-item">
+              <label>验证码最大校验次数</label>
+              <input id="setMaxAttempts" type="number" min="1" max="10" />
+            </div>
+            <div class="form-item full">
+              <label>发送测试短信</label>
+              <div style="display: flex; gap: 10px">
+                <input id="testPhone" type="text" inputmode="numeric" maxlength="11" placeholder="输入接收测试短信的手机号" />
+                <button class="btn-ghost" type="button" id="testSmsBtn" style="white-space: nowrap">发送测试</button>
+              </div>
+              <span class="tip">使用当前配置真实下发一条「验证码 123456」，不占用每日频控</span>
+            </div>
+            <div class="form-item full" style="flex-direction: row; justify-content: flex-end">
+              <button class="btn-primary" type="submit">保存配置</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="panel">
+          <h2>修改登录密码</h2>
+          <form id="passwordForm" class="form-grid">
+            <div class="form-item">
+              <label>原密码</label>
+              <input id="pwdOld" type="password" autocomplete="current-password" />
+            </div>
+            <div class="form-item">
+              <label>新密码（不少于 8 位）</label>
+              <input id="pwdNew" type="password" autocomplete="new-password" />
+            </div>
+            <div class="form-item">
+              <label>确认新密码</label>
+              <input id="pwdConfirm" type="password" autocomplete="new-password" />
+            </div>
+            <div class="form-item full" style="flex-direction: row; justify-content: flex-end">
+              <button class="btn-primary" type="submit">修改密码</button>
+            </div>
+          </form>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="modal-mask hidden" id="modalMask">
+    <div class="modal" id="modalBox"></div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="/assets/js/admin.js?v=7"></script>
+</body>
+</html>
